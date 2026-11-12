@@ -1,5 +1,5 @@
 ---
-name: accessibility
+name: pb-accessibility
 description: build and review web ui against wcag 2.2 accessibility success criteria (a/aa). use when writing or reviewing html, components, forms, modals, menus, tabs, tables, images, icons, video, color and contrast, focus and keyboard navigation, aria, error messages, or when asked for an accessibility / a11y review, audit, or wcag compliance check of a page, component, diff, or pr.
 ---
 

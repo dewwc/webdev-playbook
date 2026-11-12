@@ -1,4 +1,4 @@
-"""Generate skills/secure-coding/references/asvs/*.md from the official OWASP ASVS CSV.
+"""Generate skills/pb-secure-coding/references/asvs/*.md from the official OWASP ASVS CSV.
 
 Usage: python3 scripts/gen_asvs.py [sources/asvs-5.0.0.csv]
 """
@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "sources" / "asvs-5.0.0.csv"
-OUT = ROOT / "skills" / "secure-coding" / "references" / "asvs"
+OUT = ROOT / "skills" / "pb-secure-coding" / "references" / "asvs"
 VERSION = "5.0.0"
 
 SLUGS = {

@@ -1,5 +1,5 @@
 ---
-name: secure-coding
+name: pb-secure-coding
 description: write and review web app and api code against OWASP ASVS 5.0 security requirements. use whenever code touches authentication, login, passwords, mfa, sessions, jwt or refresh tokens, oauth/oidc, authorization or permissions, user input, database queries, file upload or download, cookies, cors, security headers, secrets or config, cryptography or hashing, logging or error handling, or when asked for a security review, security check, or owasp/asvs compliance of a diff, pr, endpoint, or feature.
 ---
 

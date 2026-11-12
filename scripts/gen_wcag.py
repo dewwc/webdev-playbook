@@ -1,4 +1,4 @@
-"""Generate skills/accessibility/references/wcag/*.md from the official W3C WCAG 2.2 JSON.
+"""Generate skills/pb-accessibility/references/wcag/*.md from the official W3C WCAG 2.2 JSON.
 
 Usage: python3 scripts/gen_wcag.py [sources/wcag-2.2.json]
 Source: https://www.w3.org/WAI/WCAG22/wcag.json
@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "sources" / "wcag-2.2.json"
-OUT = ROOT / "skills" / "accessibility" / "references" / "wcag"
+OUT = ROOT / "skills" / "pb-accessibility" / "references" / "wcag"
 VERSION = "2.2"
 UNDERSTANDING = "https://www.w3.org/WAI/WCAG22/Understanding/{}.html"
 
