@@ -11,7 +11,7 @@ Treat security requirements as part of "done". When writing code, apply the rele
 
 1. Identify which security areas the task touches (use the routing table below). Most tasks touch 1–3.
 2. Load only the matching files from `references/asvs/`. Do not load all chapters.
-3. Load the stack file from `references/stacks/` that matches the project (detect from `package.json`, `*.csproj`, `nuxt.config.*`). It shows how to meet requirements in that stack.
+3. Load the stack file from `references/stacks/` that matches the project (detect from `*.csproj`, `nuxt.config.*`). It shows how to meet requirements in that stack.
 4. Target **Level 2** unless the user specifies another level. Requirements marked L1 and L2 apply; L3 are optional hardening.
 5. Write the code so it meets the applicable requirements. Prefer framework built-ins over custom security code.
 6. Before finishing, check the result against the loaded requirements. Briefly report which ones were applied and any that could not be met, citing `v5.0.0-<id>` (e.g. `v5.0.0-8.2.2`).
@@ -63,3 +63,4 @@ When asked to review a diff, PR, or feature:
 - Never put secrets, tokens, or passwords in code, logs, or error responses.
 - Authorization is checked on the server for every request, including object ownership — not only "is logged in".
 - If a requirement conflicts with the user's instructions, follow the user but state the risk in one line.
+- ASVS covers how data and APIs are protected. Whether personal data may be collected and kept belongs to `pb-privacy`, and the shape of an API contract (status codes, errors, pagination) to `pb-api-design`, if installed.

@@ -1,6 +1,6 @@
 ---
 name: pb-logging
-description: add, fix, and audit application logging and error tracking so production problems can be traced. use when writing or reviewing request handlers, exception handlers or filters, background jobs, cron, calls to databases or external apis, logger setup, error responses, or when asked to "add logging", "audit logging", "check logs", "track errors", "why can't we see this error", set up structured logs, trace ids / correlation ids, sentry, or opentelemetry, in any stack (node/nestjs, .net, python, nuxt/vue).
+description: add, fix, and audit application logging and error tracking so production problems can be traced. use when writing or reviewing request handlers, exception handlers or filters, background jobs, cron, calls to databases or external apis, logger setup, error responses, or when asked to "add logging", "audit logging", "check logs", "track errors", "why can't we see this error", set up structured logs, trace ids / correlation ids, sentry, or opentelemetry, in .net and nuxt/vue projects.
 ---
 
 # Logging and error tracking
@@ -14,7 +14,7 @@ Log at a few **choke points** that every request or error passes through. Do not
 ### Write mode (new or changed code)
 
 1. Read `references/patterns.md` (log shape, levels, what never to log, error responses).
-2. Detect the stack (`package.json`, `*.csproj`, `pyproject.toml` / `requirements.txt`, `nuxt.config.*`) and read the matching file in `references/stacks/` if one exists. If none exists, apply `patterns.md` with the stack's standard structured logger.
+2. Detect the stack (`*.csproj`, `nuxt.config.*`) and read the matching file in `references/stacks/` if one exists. If none exists, apply `patterns.md` with the stack's standard structured logger.
 3. Reuse the project's existing logger and setup. Add a logging library only if none exists.
 4. If the change touches a choke point (table below), make sure it is logged per `patterns.md`.
 

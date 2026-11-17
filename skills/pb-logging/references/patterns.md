@@ -61,18 +61,9 @@ global exception handler  ← logs it here, once, with stack + trace_id
 
 ## 4. Error responses (RFC 9457)
 
-Clients get a safe body with the trace ID, never the stack or internal message:
+Clients get a safe body with the trace ID, never the stack or internal message. Use RFC 9457 problem details: `Content-Type: application/problem+json` with `type`, `title`, `status`, and `traceId`. The full body shape and the status code for each case are in `pb-api-design` (`references/http-semantics.md`), if installed.
 
-```json
-{
-  "type": "about:blank",
-  "title": "Internal Server Error",
-  "status": 500,
-  "traceId": "4bf92f3577b34da6a3ce929d0e0e4736"
-}
-```
-
-Set `Content-Type: application/problem+json`. Also return the ID in a response header (e.g. `traceparent` or `X-Request-Id`) so frontend error reports can include it. Support finds the logs by searching this ID.
+Also return the ID in a response header (e.g. `traceparent` or `X-Request-Id`) so frontend error reports can include it. Support finds the logs by searching this ID.
 
 ## 5. Never log
 
@@ -82,6 +73,8 @@ Configure redaction centrally in the logger, not by hoping each call is careful.
 - Full request or response bodies of auth, payment, or personal-data endpoints
 - Full personal data (national ID, phone, address, card number). Mask it (`****1234`) or use an internal ID.
 - Raw user input placed into the message string without encoding (log injection: newlines can forge log lines). Structured fields avoid this.
+
+Logs that hold personal data are personal data: their retention and deletion follow `pb-privacy` (`references/law.md` section 4), if installed.
 
 ## 6. Storage and error tracking
 

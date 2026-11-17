@@ -8,7 +8,7 @@ For each item, find where it lives (or confirm it is missing).
 
 | # | Check | Where to look | Missing / wrong when |
 |---|---|---|---|
-| 1 | Central logger setup | app bootstrap (`main.ts`, `Program.cs`, `app/main.py`, `nuxt.config`, server plugins) | Plain-text output, logs to files inside the app, no level config, no redaction, `console.log` used as the logger |
+| 1 | Central logger setup | app bootstrap (`Program.cs`, `nuxt.config`, server plugins) | Plain-text output, logs to files inside the app, no level config, no redaction, `console.log` used as the logger |
 | 2 | Trace ID per request | middleware, OpenTelemetry setup, logger context | Log lines from one request cannot be linked; ID not returned to the client |
 | 3 | Request log | HTTP logging middleware | No per-request line, or it lacks route, status, or duration |
 | 4 | Global exception handler | exception filter / `UseExceptionHandler` / framework error hook | Unhandled errors not logged, logged without stack, or stack sent to the client |
@@ -24,19 +24,19 @@ Search, then open each hit to confirm. Adapt the patterns to the stack.
 
 | Problem | Search for (examples) | Category |
 |---|---|---|
-| Silent catch | `catch\s*(\(\w*\))?\s*\{\s*\}`, `except.*:\s*pass`, `catch { }` | Missing |
+| Silent catch | `catch\s*(\(\w*\))?\s*\{\s*\}`, `catch { }` | Missing |
 | Catch, log, rethrow (duplicate logs) | a `catch` block that logs and then `throw`s | Wrong |
-| Unstructured message | template strings or concatenation in log calls (`` log(`...${x}`) ``, `f"..."`, `$"..."`) | Wrong |
-| Debug output left in code | `console.log`, `print(`, `Console.WriteLine` in server code | Wrong |
+| Unstructured message | template strings or concatenation in log calls (`` log(`...${x}`) ``, `$"..."`) | Wrong |
+| Debug output left in code | `console.log`, `Console.WriteLine` in server code | Wrong |
 | Wrong level | `error` for 4xx/validation, `info` for real failures | Wrong |
 | Secrets or personal data | log calls near `password`, `token`, `authorization`, `cookie`, `secret`, `otp`, logging whole `req`/`body`/`user` objects | Leak |
-| Stack trace to client | error responses that include `stack`, `exception.ToString()`, `traceback` | Leak |
+| Stack trace to client | error responses that include `stack`, `exception.ToString()` | Leak |
 
 ## Report format
 
 ```
 Missing
-- src/main.ts:12 — no global exception filter; unhandled errors are not logged. Add filter per stacks/nestjs.md.
+- Program.cs:12 — no global exception handler; unhandled errors are not logged. Add one per stacks/dotnet.md.
 Wrong
 - src/charging/charging.service.ts:88 — catch logs then rethrows; error logged twice. Remove the log, keep the throw.
 Leak

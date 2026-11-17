@@ -1,0 +1,45 @@
+name: Check reference sources
+
+# Once a month: download the latest official sources and open an issue if anything changed upstream.
+on:
+  schedule:
+    - cron: "0 2 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download latest sources and regenerate references
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 scripts/update_sources.py | tee report.txt
+
+      - name: Open an issue if anything changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(git status --porcelain -- sources skills)" ] && ! grep -q '^!' report.txt; then
+            echo "Sources are up to date."
+            exit 0
+          fi
+          title="Reference sources changed upstream"
+          open=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq length)
+          if [ "$open" != "0" ]; then
+            echo "An issue is already open."
+            exit 0
+          fi
+          {
+            echo 'Run `python3 scripts/update_sources.py` locally, review `git diff`, then commit.'
+            echo
+            echo '```'
+            cat report.txt
+            echo '```'
+          } > body.md
+          gh issue create --title "$title" --body-file body.md
