@@ -1,6 +1,6 @@
 # ASP.NET Core (.NET)
 
-Built-in features that meet the obligations in `law.md`. Check `Program.cs` and the Identity setup for what is already used.
+Built-in features that meet the obligations in `law.md`. Check `Program.cs` for what is already used. Rules that name ASP.NET Core Identity apply only when the project uses it.
 
 ## Cookie consent (law.md section 2)
 - `Configure<CookiePolicyOptions>(o => o.CheckConsentNeeded = _ => true)` with `app.UseCookiePolicy()`: cookies not marked `IsEssential` are not written until `ITrackingConsentFeature.GrantConsent()` is called. Mark only cookies the service needs (auth, CSRF) as essential.
@@ -16,7 +16,9 @@ Built-in features that meet the obligations in `law.md`. Check `Program.cs` and 
 - A `BackgroundService` with `PeriodicTimer` (or Hangfire / Quartz, if the project has one) that removes expired rows with `ExecuteDeleteAsync`, or anonymises them with `ExecuteUpdateAsync`.
 
 ## Protection and logs (law.md sections 4 and 6)
-- Sensitive fields: encrypt per field with the Data Protection API (`IDataProtector`), with keys persisted outside the container. Identity can encrypt `[ProtectedPersonalData]` properties when `Stores.ProtectPersonalData` is on and an `ILookupProtector` is registered.
+- Sensitive fields: encrypt per field with the Data Protection API (`IDataProtector`), with keys persisted outside the container. Identity can encrypt `[ProtectedPersonalData]` properties when `Stores.ProtectPersonalData` is on and an `ILookupProtector` and an `ILookupProtectorKeyRing` are registered.
+- Token claims: a JWT payload is readable by anyone who holds the token. Put the user ID in it, not the name, email, or phone.
+- Responses with personal data set `Cache-Control: no-store` (ASVS 14.3.2 in `pb-secure-coding`, if installed).
 - Keep personal data out of logs with the logger's redaction (`Microsoft.Extensions.Compliance.Redaction`); log rules are in `pb-logging`, if installed.
 
 ## Sharing (law.md section 5)

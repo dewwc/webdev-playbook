@@ -36,7 +36,8 @@ What each part of an endpoint must mean. `§` numbers are sections of RFC 9110 (
 | A dependency failed or timed out | 502, 504 | 15.6.3, 15.6.5 |
 | Temporarily unable to serve | 503 + `Retry-After` | 15.6.4 |
 
-- The status code alone tells success from failure: an error never returns 200 with an error body (#243, #220).
+- The status code alone tells success from failure: an error never returns 200 with an error body (§15). A stream (`text/event-stream`) that has already sent 200 can report a later failure only inside the stream; that is not a finding, but a failure known before the first byte gets a status code.
+- Work that can outlast client or proxy timeouts (often 30–60 s): 202 with a status resource (#253), or a stream.
 - The spec lists every success and error response of each endpoint (#151).
 
 ## 3. Errors (RFC 9457)
@@ -97,15 +98,15 @@ The `errors` array above follows the RFC's own example. A framework's built-in v
 
 ## 7. OpenAPI
 
-- The spec is the source of truth for the contract (#101) and is published (#192). Use OpenAPI 3.1 or later (3.2 is current).
+- The spec is the source of truth for the contract (#101) and is published (#192). A new spec uses OpenAPI 3.1 or later (3.2 is current); a 3.0 spec from the project's existing generator is not a finding.
 - Each operation declares: parameters, request body schema, every response code with its schema (#151), and the problem details schema for errors.
 - Schemas state `required`, types, and standard `format`s: `date-time` (RFC 3339), `uuid`, `email`, `int64` (#238, #169, #171).
 - ASP.NET Core generates the spec from the code (`Microsoft.AspNetCore.OpenApi`): declare response types and status codes on each endpoint, so the generated spec matches the behaviour.
 
 ## 8. Caching (RFC 9111)
 
-- Every `GET` response sets `Cache-Control` explicitly, and cacheable endpoints say so in the spec (#227).
-- Responses with per-user or sensitive data use `no-store` or `private`.
+- Cacheable endpoints say so in the spec and set `Cache-Control` (#227).
+- Responses with per-user or sensitive data set `no-store` (ASVS 14.3.2 in `pb-secure-coding`, if installed). A shared cache does not store a response to a request with `Authorization` unless the response allows it (RFC 9111 §3.5), so a missing header there is Improve, not Wrong.
 
 ## References
 

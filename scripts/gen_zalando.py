@@ -14,12 +14,12 @@ URL = "https://opensource.zalando.com/restful-api-guidelines/"
 
 # A rule is an anchor line followed by a heading: "[#159]\n== {MUST} support pagination"
 RULE = re.compile(r"^\[#(\d+)\]\n=+ (.+)$", re.M)
-LEVEL = re.compile(r"\{(MUST|SHOULD|MAY)\}")
+LEVEL = re.compile(r"\{(MUST|SHOULD|MAY)\}", re.I)  # the source has one "{Should}"
 
 
 def clean(title: str) -> tuple[str, str]:
     """Split a rule heading into (level, text) and drop AsciiDoc markup."""
-    level = "/".join(LEVEL.findall(title))
+    level = "/".join(m.upper() for m in LEVEL.findall(title))
     text = LEVEL.sub("", title)
     text = re.sub(r"<<(\d+)[^>]*>>", r"#\1", text)  # cross reference to another rule
     text = re.sub(r"\{([\w-]+)\}", r"\1", text)  # attribute reference, e.g. {RFC-9457}

@@ -30,16 +30,16 @@ Sections are in `references/core-web-vitals.md`.
 When asked to review a page, component, diff, or PR:
 
 1. Load the files of Workflow step 2.
-2. Find the page's LCP element: the largest image or text block in the first viewport. Most LCP findings depend on it.
-3. Map the code to rows in the routing table. Check every pattern in those sections and every rule in the loaded stack files.
-4. Report only findings, one per broken pattern: `path:line — <metric> (<audit-id>): <problem>. <fix>.` Write the metric alone when the pattern has no audit ID. For something missing, anchor the finding at the file where it belongs. Order by reach: the LCP element and code that runs on every page (layout, global scripts) first.
-5. List separately what source code cannot show: the actual LCP element, real interaction delay, layout shift on slow networks, and anything set outside the code (protocol and compression at the proxy, minification, unused or duplicated JavaScript in the built bundle, long tasks, back/forward cache).
+2. For each page in scope, name the likely LCP element from the markup: the largest image or text block in the first viewport. Put the list at the top of the report. Most LCP findings depend on it.
+3. For a diff, check the sections the routing table maps the change to. For a whole page or project, check all four sections. In both cases check every rule in the loaded stack files.
+4. Report only findings, one per broken pattern: `path:line — <LCP | CLS | INP | Delivery> (<audit-id>): <problem>. <fix>.` Leave the audit ID out when the pattern has none, as most stack-file rules do. For something missing, anchor the finding at the file where it belongs. Order by reach: the LCP element and code that runs on every page (layout, global scripts) first.
+5. List separately what source code cannot show: whether the element of step 2 is the real LCP element, real interaction delay, layout shift on slow networks, and anything set outside the code (protocol and compression at the proxy, minification, unused or duplicated JavaScript in the built bundle, long tasks, back/forward cache).
 
 If the page can be run, measure it: `npx lighthouse <url> --only-categories=performance --output=json --output-path=./lighthouse.json`. Load `references/lighthouse-audits.md` to read the report. State two limits with the result: a Lighthouse run is one lab device, while pass or fail is decided by field data (Chrome UX Report, or the `web-vitals` library in production); and a page-load run does not measure INP, so Total Blocking Time is its lab stand-in.
 
 ## Rules
 
-- Security and privacy win over speed. Responses with personal or sensitive data keep `Cache-Control: no-store` and stay out of shared caches, even though that costs repeat-visit speed and the back/forward cache (ASVS 14.2.2 and 14.3.2 in `pb-secure-coding`, if installed).
+- Security and privacy win over speed. Responses with personal or sensitive data keep `Cache-Control: no-store` and stay out of shared caches, even though that costs repeat-visit speed and can cost the back/forward cache. Never propose caching them. A missing `no-store` is a security finding (ASVS 14.2.2 and 14.3.2 in `pb-secure-coding`), not a performance finding: mention it in one line outside the findings list.
 - A script that tracks users loads after consent, not merely after first interaction (`pb-privacy`, if installed).
 - Lazy-load only what is below the first viewport or behind an interaction.
 - An optimization that is not one of the listed patterns needs a measurement first: state the number before and after.

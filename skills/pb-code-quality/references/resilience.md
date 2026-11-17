@@ -4,7 +4,7 @@ How code that calls anything over a network stays up when that thing is slow or 
 
 ## 1. Timeouts (REL05-BP05, CWE-1088)
 
-Every outbound call has an explicit timeout. Library defaults are too long or absent:
+Every outbound call has an explicit timeout, sized to what the call needs. Cite CWE-1088 when there is no timeout or it is infinite; cite REL05-BP05 when a finite default is far from what the call needs. Library defaults are often too long or absent:
 
 | Client | Default | Set with |
 |---|---|---|
@@ -12,6 +12,7 @@ Every outbound call has an explicit timeout. Library defaults are too long or ab
 | `$fetch` (Nuxt, ofetch) | none | `timeout` option, on a shared `$fetch.create()` instance |
 | .NET `HttpClient` | 100 s | `Timeout` on the client from `IHttpClientFactory`, plus a `CancellationToken` per request |
 | Database | 30 s per command in ADO.NET (SqlClient, Npgsql); none in most Node database clients | command or statement timeout, and pool acquire timeout, in the driver or ORM config |
+| Vendor SDK (payment, AI, cloud) | varies; often minutes, with retries that include `POST` | the SDK's client options; read them, do not assume |
 
 - Pass the request's cancellation signal down (`AbortSignal`, `CancellationToken`), so work stops when the caller has gone.
 - An inner timeout is shorter than the timeout of the request it serves.
@@ -65,9 +66,8 @@ Rate limits on incoming requests are owned by `pb-secure-coding` (ASVS V2.4).
 
 A database write and a call to another system cannot share one transaction.
 
-- Save the record in a pending state first, call the other system with an idempotency key, then record the outcome.
-- A job finds records left pending and completes or cancels them.
-- An external side effect (charge, email, webhook) made before the local write is untracked when that write fails.
+- A call with a side effect that must not be lost or repeated (charge, email, webhook): save the record in a pending state first, call the other system with an idempotency key, then record the outcome. A job finds records left pending and completes or cancels them. Such a side effect made before the local write is untracked when that write fails.
+- A call that only returns data (a lookup, an AI generation): calling first and writing once is fine. Save its result before any further step that can fail, and save it even when the caller has disconnected, since the call was paid for.
 
 ## References
 

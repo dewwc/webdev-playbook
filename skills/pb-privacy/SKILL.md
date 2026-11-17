@@ -30,17 +30,17 @@ Sections are in `references/law.md`.
 | Third-party services and SDKs, webhooks, data sent abroad | 5 Sharing | ID.DE-P in `identify.md` |
 | Encryption, access control, masking of personal data | 6 Security | PR.DS-P, PR.AC-P in `protect.md` |
 
-The NIST files are in `references/nist-pf/`. Load one only when the user wants findings mapped to the NIST Privacy Framework, or the project is under neither PDPA nor GDPR; then cite `PF <id>` as well. `govern.md` holds organisation-level requirements (policies, training, roles), for audits that ask about them.
+The NIST files are in `references/nist-pf/`. Load one only when the user wants findings mapped to the NIST Privacy Framework, or says the project is under neither PDPA nor GDPR; then cite `PF <id>` as well. `govern.md` holds organisation-level requirements (policies, training, roles), for audits that ask about them.
 
 ## Review mode
 
 When asked for a privacy review or audit of a feature, diff, PR, or project:
 
 1. Load the files of Workflow step 2.
-2. Build the data inventory: every personal data field, its store, and its recipients (database columns, logs, analytics events, third-party calls, exports). Put it at the top of the report as a short list.
+2. Build the data inventory: every personal data field, its store, and its recipients (database columns, logs, token claims, browser storage, analytics events, third-party calls, exports). Put it at the top of the report as a short list.
 3. Check the inventory against each section of `law.md` and each rule of the stack files.
-4. Report findings one per line, citing the PDPA and GDPR cells of the `law.md` row: `path:line — <PDPA s.n / GDPR Art. n>: <problem>. <fix>.` For something missing, anchor the finding at the file where it belongs. Group as **Collect**, **Consent**, **Rights**, **Retention**, **Sharing**, **Security**, matching the six sections. Within a group, the most sensitive data comes first: sensitive categories and government IDs, then contact data.
-5. List separately what code cannot show: the privacy notice text, contracts with processors, the chosen lawful basis, retention periods.
+4. Report findings one per line, citing the PDPA and GDPR cells of the `law.md` row: `path:line — <PDPA s.n / GDPR Art. n>: <problem>. <fix>.` A stack-file rule cites the closest row of the `law.md` section it names. For something missing, anchor the finding at the file where it belongs. Group as **Collect**, **Consent**, **Rights**, **Retention**, **Sharing**, **Security**, matching the six sections. Within a group, the most sensitive data comes first: sensitive categories and government IDs, then contact data, then the rest.
+5. List separately what code cannot show: the privacy notice text, contracts with processors, the chosen lawful basis, retention periods. The split: a missing mechanism (no notice link, no delete path, no cleanup job) is a finding; a missing decision (which basis, how long) goes in this list.
 
 ## Rules
 
@@ -48,6 +48,6 @@ When asked for a privacy review or audit of a feature, diff, PR, or project:
 - Scripts and cookies that are not needed to deliver the service (analytics, ads, social embeds) load only after the user opts in.
 - Sensitive data needs explicit consent: race, ethnicity, political opinion, religious or philosophical belief, sexual behaviour or orientation, criminal record, health, disability, trade union membership, genetic and biometric data.
 - Deletion reaches every copy: main database, caches, search indexes, files, analytics, and third parties.
-- Personal data stays out of URLs, logs, and analytics event names (log rules: `pb-logging` section "Never log", if installed).
+- Personal data stays out of URLs, logs, and analytics event names (log rules: `pb-logging`, `references/patterns.md` section 5 "Never log", if installed).
 - Report personal data that is unprotected (readable without authentication, stored in plain text when sensitive) under **Security**. How to protect it belongs to `pb-secure-coding` (ASVS V14, V8, V11), if installed.
 - If an obligation conflicts with the user's instruction, follow the user but state the legal risk in one line.

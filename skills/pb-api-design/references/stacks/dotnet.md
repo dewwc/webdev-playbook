@@ -1,6 +1,11 @@
 # ASP.NET Core (.NET)
 
-How to meet the contract rules in ASP.NET Core. Check `Program.cs` for what is already set up.
+How to meet the contract rules in ASP.NET Core. Check `Program.cs` for what is already set up. The rules name controllers and minimal APIs; for another endpoint library (FastEndpoints, Carter), check the same outcome with that library's API.
+
+## FastEndpoints
+- Errors: `app.UseFastEndpoints(c => c.Errors.UseProblemDetails())` makes validation errors problem details; add `AddProblemDetails()`, `UseExceptionHandler()`, and `UseStatusCodePages()` for the rest.
+- Response types: declare each status in `Configure()` with `Description(b => b.Produces<T>(200).ProducesProblem(404))`.
+- Validation: a `Validator<TRequest>` per request type, instead of checks in `HandleAsync`.
 
 ## Errors (RFC 9457)
 - `builder.Services.AddProblemDetails()` with `app.UseExceptionHandler()` and `app.UseStatusCodePages()` turns unhandled exceptions and empty error responses into problem details, with a `traceId` extension.
@@ -17,6 +22,7 @@ How to meet the contract rules in ASP.NET Core. Check `Program.cs` for what is a
 ## DTOs and JSON
 - Request and response types are DTOs (records), never EF entities: an entity change must not change the contract.
 - Nullable reference types and `required` members decide `required` and nullability in the generated schema; keep them accurate.
+- A field with a fixed set of values is an enum in the DTO, not a `string`, so the schema lists the values.
 - `System.Text.Json` writes enums as numbers by default. Add `JsonStringEnumConverter`, so enum values are readable and can be reordered without breaking clients.
 
 ## OpenAPI

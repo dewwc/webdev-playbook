@@ -6,14 +6,14 @@ Each row is an obligation a reviewer can check in code. PDPA = Thailand's Person
 
 | Obligation | In code | PDPA | GDPR |
 |---|---|---|---|
-| Purpose limitation | Each personal data field has a stated purpose, and is used only for it. A new use needs a new notice or consent. | s.21 | Art. 5(1)(b) |
+| Purpose limitation | Each personal data field has a purpose stated in the notice or the record of processing, and is used only for it. A new use needs a new notice or consent. Where neither document exists, report that once, not per field. | s.21 | Art. 5(1)(b) |
 | Data minimisation | No field collected "in case it is useful". Fields the purpose does not need are optional or absent. Store the derived value (age over 18: yes) instead of the source (date of birth) when that is enough. | s.22 | Art. 5(1)(c) |
 | Notice at collection | The form or screen that collects data links to a notice with the purpose, retention period, recipients, controller contact, and the person's rights. | s.23 | Art. 13 |
+| Data from another source | Data that comes from a third party (a social login profile, a partner API, an import) is covered by the notice, and the person is told within 30 days (PDPA) or one month (GDPR). | s.25 | Art. 14 |
 | Lawful basis | Each kind of processing has one recorded basis: consent, contract, legal obligation, vital interest, public task, or legitimate interest (PDPA adds research, statistics, and archives). | s.19, s.24 | Art. 6 |
 | Sensitive data | Explicit consent, stored separately or encrypted per field, and access limited to the roles that need it. | s.26 | Art. 9, Art. 10 |
 | Government identifiers | National ID, passport, and tax numbers are collected only when a law or the purpose requires them, encrypted per field, and masked on screen. | s.22, s.37(1) | Art. 5(1)(c), Art. 87 |
 | Children | Consent from a parent or guardian where the law requires it. | s.20 | Art. 8 |
-| Accuracy | The person can correct their data, and corrections reach the copies. | s.35, s.36 | Art. 5(1)(d), Art. 16 |
 | Privacy by default | The most private setting is the default: optional sharing, public profiles, and marketing start switched off. | — | Art. 25 |
 
 ## 2. Consent
@@ -30,16 +30,16 @@ Consent is one lawful basis among several. Use these rules wherever it is the ba
 
 ## 3. Rights
 
-The system can do each of these for one person in time: PDPA gives 30 days for an access request (s.30); GDPR gives one month for any request (Art. 12(3)).
+The system can do each of these for one person in time: PDPA gives 30 days for an access request (s.30); GDPR gives one month for any request (Art. 12(3)). A self-service screen, an admin function, or a documented script each count. Report the right when none of them exists.
 
 | Right | In code | PDPA | GDPR |
 |---|---|---|---|
 | Access | Find and return all data about one person across every store. | s.30 | Art. 15 |
 | Portability | Export it in a structured, machine-readable format (JSON, CSV). | s.31 | Art. 20 |
-| Objection | A flag that stops a given kind of processing for that person. | s.32 | Art. 21 |
+| Objection | Where the system does direct marketing, profiling, or processing based on legitimate interest or public task: a flag that stops it for that person. Without such processing, nothing to report. | s.32 | Art. 21 |
 | Erasure | Delete or anonymise across every copy: database, caches, search indexes, files, analytics, third parties. Backups are covered by their expiry. Rows kept for a legal duty (invoices) are kept, with the rest removed. A row that is only flagged as deleted is left out of every read until it is removed. | s.33 | Art. 17 |
 | Restriction | Mark data as "stored but not used" while a dispute is open. | s.34 | Art. 18 |
-| Rectification | Correct data and pass the correction on. | s.35, s.36 | Art. 16 |
+| Rectification | The person can correct their data, and the correction reaches the copies and the recipients. | s.35, s.36 | Art. 5(1)(d), Art. 16 |
 | Identity check | The request comes from the person themselves: an authenticated session or an equivalent check, before any data is returned or deleted. | s.37(1) | Art. 12(6) |
 
 - Anonymised means the person can no longer be identified by anyone. Replacing the name while keeping the email or user ID is not anonymised.

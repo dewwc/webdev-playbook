@@ -3,7 +3,7 @@
 The server's share of Core Web Vitals is time to first byte (part of LCP) and how responses are compressed and cached. Check `Program.cs` for what is already set up.
 
 ## Time to first byte (LCP)
-- Slow endpoints behind the first viewport are covered by `pb-code-quality`, if installed: blocking calls, queries in loops, unbounded reads, missing indexes. Without it, check for `.Result` / `.Wait()`, and for read queries without `AsNoTracking()`, a `Select` projection, and pagination.
+- For each endpoint the first viewport calls, check for `.Result` / `.Wait()`, a query inside a loop, a read with no pagination, and a read that loads whole entities where a `Select` projection would do. Skip endpoints the first viewport does not call; the full server-side check is `pb-code-quality`.
 - Return a DTO with the fields the page needs, not the whole entity. Smaller JSON is faster to send and to parse.
 
 ## Compression (delivery)
@@ -12,7 +12,7 @@ The server's share of Core Web Vitals is time to first byte (part of LCP) and ho
 
 ## Caching (delivery)
 - Public, shared responses: output caching (.NET 7+), `AddOutputCache()` + `UseOutputCache()` + `.CacheOutput()` or `[OutputCache]`. By default it skips authenticated requests and responses that set a cookie; keep those defaults.
-- Browser and CDN caching: `[ResponseCache(Duration = 60)]` sets `Cache-Control`. Per-user or sensitive responses: `[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]`.
+- Browser and CDN caching: `[ResponseCache(Duration = 60)]` sets `Cache-Control`. Per-user or sensitive responses: `[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]`. These attributes are MVC's; in minimal APIs and FastEndpoints, set `Response.Headers.CacheControl` in the endpoint or in one middleware.
 - Static files served by the app: .NET 9+ `MapStaticAssets()` fingerprints and pre-compresses them. With `UseStaticFiles`, set `Cache-Control: public,max-age=31536000,immutable` in `OnPrepareResponse`, for fingerprinted files only.
 
 ## Cross-origin API calls (LCP, INP)

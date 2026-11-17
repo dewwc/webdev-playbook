@@ -8,7 +8,7 @@ For each item, find where it lives (or confirm it is missing).
 
 | # | Check | Where to look | Finding when |
 |---|---|---|---|
-| 1 | Outbound HTTP client | shared client or module setup (`AddHttpClient` in `Program.cs`; `$fetch.create` or a composable in Nuxt) | No timeout (CWE-1088), or every call site builds its own client (stack file) |
+| 1 | Outbound HTTP client, including vendor SDK clients (payment, AI, cloud) | shared client or module setup (`AddHttpClient` or SDK client registration in `Program.cs`; `$fetch.create` in Nuxt server code) | No timeout or an infinite one (CWE-1088); a default timeout or retry count far from what the call needs (REL05-BP05, REL05-BP03); every call site builds its own client (stack file) |
 | 2 | Database setup | ORM or driver config | Connection pooling turned off (CWE-1072); no statement timeout where the driver has no default (CWE-1088, `resilience.md` section 1) |
 | 3 | Retry policy | client setup, interceptors, queue config | Retries without limit or backoff, or on non-idempotent calls (REL05-BP03) |
 | 4 | Queue consumers and jobs | consumers, schedulers, hosted services | A duplicate message repeats the side effect; one failure stops the loop (REL04-BP04, CWE-703) |
@@ -26,6 +26,8 @@ Search, then open each hit to confirm. Adapt the patterns to the stack.
 | Result or status not checked | ignored return value, HTTP response used without checking its status | CWE-252, CWE-394 |
 | Resource not released | file, stream, connection, or lock opened without `using`, `with`, or `finally` | CWE-404 |
 | Shared state without protection | module-level or static mutable state changed by request handlers; check-then-act on shared data | CWE-662 |
+| Check-then-insert in the database | "exists?" read, then insert, with no unique index on that key; a unique violation left to surface as a 500 | CWE-662 |
+| Writes that belong together saved apart | two `SaveChanges` / commits for one change, where a failure between them leaves a partial state | — (stack file) |
 | Float equality | `==` between floating point numbers, including money held as a float | CWE-1077 |
 | Query in a loop (N+1) | an ORM or repository call awaited inside `for`, `map`, `forEach`; a lazy-loaded relation read in a loop | CWE-1050, CWE-1073 |
 | Slow algorithm | a linear search or a nested loop over the same collection, inside a loop | CWE-407 |
@@ -39,7 +41,7 @@ Search, then open each hit to confirm. Adapt the patterns to the stack.
 | Duplicated code | the same block copied to several places | CWE-1041 |
 | Circular dependencies | modules that import each other (projects that reference each other; in TypeScript, `npx madge --circular`) | CWE-1047 |
 | Oversized units | very long files, functions with a long parameter list | CWE-1080, CWE-1064 |
-| Hard-coded values | hosts, ports, URLs, and repeated magic numbers in code instead of config | CWE-1051, CWE-1052 |
+| Hard-coded values | hosts, ports, and URLs that differ between environments; the same magic number repeated across files. A fixed public vendor URL is not a finding. | CWE-1051, CWE-1052 |
 
 ## Report format
 

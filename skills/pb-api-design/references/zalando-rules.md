@@ -98,7 +98,7 @@ MUST = required, SHOULD = expected unless there is a stated reason, MAY = option
 - **#148** MUST: use HTTP methods correctly
 - **#149** MUST: fulfill common method properties
 - **#229** SHOULD: consider to design `POST` and `PATCH` idempotent
-- **#231** Should use secondary key for idempotent `POST` design
+- **#231** SHOULD: use secondary key for idempotent `POST` design
 - **#253** MAY: support asynchronous request processing
 - **#154** MUST: define collection format of header and query parameters
 - **#236** SHOULD: design simple query languages using query parameters

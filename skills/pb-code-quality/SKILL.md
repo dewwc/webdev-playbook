@@ -7,7 +7,7 @@ description: write and review server and shared code against the iso/iec 5055 (c
 
 ISO/IEC 5055 measures code on four characteristics. This skill covers three: **Reliability** (keeps working when something fails), **Efficiency** (does not waste database, CPU, or memory), **Maintainability** (cheap to change). The fourth, Security, belongs to `pb-secure-coding`.
 
-Scope: code that runs on a server, including Nuxt server routes and data fetched during server rendering. Code that runs only in the browser belongs to `pb-web-performance`.
+Scope: code that runs on a server, including Nuxt server routes (`server/`) and data fetched during server rendering (`useFetch` / `useAsyncData` with `ssr` on). Code that runs only in the browser, which is all of a Nuxt app with `ssr: false` outside `server/`, belongs to `pb-web-performance`.
 
 ## Workflow
 
@@ -24,7 +24,7 @@ Paths are relative to `references/`.
 |---|---|
 | Calls to HTTP APIs, databases, queues, caches; timeouts, retries, idempotency; shutdown; health checks; queue consumers and jobs | `resilience.md`, `cwe/reliability.md` |
 | Error handling, return values, null handling, resource cleanup, shared state across threads or requests, type and number conversion | `cwe/reliability.md` |
-| Database queries, ORM usage, loops over data, indexes, connection pools, string building in loops | `cwe/efficiency.md` (slow algorithms are CWE-407, in `cwe/maintainability.md`) |
+| Database queries, ORM usage, loops over data, indexes, connection pools, string building in loops | `cwe/efficiency.md` (slow algorithms are CWE-407, listed in `cwe/maintainability.md`) |
 | Refactoring, module structure, large files or functions, duplicated or dead code, hard-coded values | `cwe/maintainability.md` |
 
 ## Audit mode
@@ -32,9 +32,9 @@ Paths are relative to `references/`.
 When asked to audit or review code quality across a project, a folder, a diff, or a PR:
 
 1. Load `references/audit.md`, `references/resilience.md`, the three `cwe/` files, and the stack file of Workflow step 2.
-2. Follow the two passes of `audit.md`: choke points first, then the scan. Then check each rule of the stack file.
+2. Follow the two passes of `audit.md`: choke points first, then the scan. Then check each rule of the stack file. The `cwe/` files are the ID list for findings; their entries without a scan row are checked only where the code leads to them, and the report says so in one line.
 3. Read each hit to confirm it before reporting; a search result alone is not a finding.
-4. Report only findings, one per line: `path:line — <ID> (<characteristic>): <problem>. <fix>.` `<ID>` is the CWE; where no CWE fits, the `REL` ID; where neither exists, the section it comes from (`resilience.md §8`, `stacks/dotnet.md`). For something missing, anchor the finding at the file where it belongs. Group as **Reliability**, **Efficiency**, **Maintainability**, in that order; a CWE listed under two characteristics goes in the group of the harm you describe.
+4. Report findings one per line: `path:line — <ID> (<characteristic>): <problem>. <fix>.` `<ID>` is the CWE whose description matches the problem; where none matches, the `REL` ID; where neither exists, the section it comes from (`resilience.md §8`, `stacks/dotnet.md`). For something missing, anchor the finding at the file where it belongs. Group as **Reliability**, **Efficiency**, **Maintainability**, in that order, by the harm you describe, whichever characteristic lists the CWE (a slow algorithm, CWE-407, goes under Efficiency). A stack-file rule takes the characteristic in its section heading. End with the fix-first list of `audit.md`.
 5. Fix only when the user asks. Fix choke points first (shared HTTP client, database setup, job runner), because one change there covers every call site.
 
 ## Rules
